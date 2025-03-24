@@ -1,4 +1,4 @@
-package com.server.woody.woody
+package com.server.woody
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication

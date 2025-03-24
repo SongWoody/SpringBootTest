@@ -1,7 +1,5 @@
 package com.server.woody.woody
 
-import com.server.woody.woody.database.ProductService
-import com.server.woody.woody.database.entities.Members
 import com.server.woody.woody.dto.TestDto
 import com.server.woody.woody.service.MyService
 import org.springframework.beans.factory.annotation.Autowired
@@ -15,8 +13,6 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
 import java.time.Duration
-import java.time.LocalTime
-import java.util.stream.Stream
 
 
 @Controller
@@ -24,15 +20,6 @@ class HelloController {
 
     @Autowired
     lateinit var myService: MyService
-
-    @Autowired
-    lateinit var productService: ProductService
-
-    @PostMapping("/products")
-    fun createProduct(@RequestBody member: Members): Members {
-        println("member $member")
-        return productService.saveProduct(member)
-    }
 
     @GetMapping("/hello")
     @ResponseBody
