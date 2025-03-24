@@ -7,14 +7,16 @@ import com.server.woody.woody.service.MyService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.io.ClassPathResource
 import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
 import org.springframework.stereotype.Controller
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.ResponseBody
-import org.springframework.web.bind.annotation.ResponseStatus
+import org.springframework.web.bind.annotation.*
+import reactor.core.publisher.Flux
 import java.io.BufferedReader
 import java.io.InputStreamReader
+import java.nio.charset.StandardCharsets
+import java.time.Duration
+import java.time.LocalTime
+import java.util.stream.Stream
 
 
 @Controller
@@ -43,6 +45,24 @@ class HelloController {
     fun main(): String {
         println("get main")
         return "it's /main"
+    }
+
+    @GetMapping("/event", produces = [MediaType.TEXT_EVENT_STREAM_VALUE + ";charset=UTF-8"])
+    fun sseEvent(): Flux<String> {
+        val response = generateResponse()
+        // UTF-8로 인코딩된 문자열을 명시적으로 처리
+        val utf8Response = String(response.toByteArray(StandardCharsets.UTF_8), StandardCharsets.UTF_8)
+        return Flux.fromIterable(utf8Response.toList().map { it.toString() })
+            .delayElements(Duration.ofMillis(50)) // 50ms 간격
+            .concatWith(Flux.just("\n")) // 스트림 종료
+    }
+
+    private fun generateResponse(): String {
+        return """
+            안녕하세요! 👋 저는 AI 챗봇입니다. 
+            궁금한 것이 있으시면 언제든지 질문해주세요. 
+            Kotlin, Spring Boot, SSE 등에 대해 답변 가능합니다. 😊👍
+        """.trimIndent()
     }
 
     @GetMapping("/.well-known/apple-app-site-association", produces = ["application/json; charset=UTF-8"])
